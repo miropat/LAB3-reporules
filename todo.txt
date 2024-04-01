@@ -2,3 +2,5 @@
 2. Gas up
 3. Veroilmoitus
 4. Treenit
+5. Kiipeily
+6. Banaanit
