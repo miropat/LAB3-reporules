@@ -2,16 +2,18 @@ name: Greet when user opens their first pull request
 
 on:
   pull_request:
-    types: opened
-    
-jobs: # The jobs that run in this workflow
-  greeting: # the first job is named as label_issues
-    runs-on: ubuntu-latest # This job will run on the latest version of Ubuntu.
-    permissions: # This job requires write access to issues in order to add labels and comment.
-      contents: write
-      pull-requests: write
+    types: [opened]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  greeting:
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/first-interaction@v1
+    - name: Greet User
+      uses: actions/first-interaction@v1
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
-        pr-message: "Thanks for the first pull request!
+        issue-message: "Thanks for the first pull request! We appreciate your contribution."
