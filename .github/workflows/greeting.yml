@@ -1,11 +1,15 @@
-name: Label & comment issues #the name of the workflow
-on: # This action will trigger when an issue is reopened or opened.
+name: Label & comment issues # The name of the workflow
+
+on: # This action will trigger when an issue is reopened, opened, or closed.
   issues:
     types:
       - reopened
       - opened
+      - closed
+
 jobs: # The jobs that run in this workflow
-  label_issues: # the first job is named as label_issues
+
+  label_issues: # The first job is named as label_issues
     runs-on: ubuntu-latest # This job will run on the latest version of Ubuntu.
     permissions: # This job requires write access to issues in order to add labels and comment.
       issues: write
@@ -20,21 +24,31 @@ jobs: # The jobs that run in this workflow
               repo: context.repo.repo,
               labels: ["issue", "bug", "fix"]
             })
-      - name: Comment on new issue #this is another step that comments on the issue 
+      - name: Comment on new issue # This is another step that comments on the issue 
         uses: peter-evans/create-or-update-comment@v1 # This step uses the "peter-evans/create-or-update-comment" action to create or update a comment on the issue.
         with:
           issue-number: ${{ github.event.issue.number }} # The issue number is obtained from the context of the event that triggered the action.
           body: | # The body of the comment is a message thanking the user for opening the issue.
-           Thanks for opening this issue! We'll take a look as soon as possible.
-        
-# Comment on when an issue is closed
-      - name: Comment on a closed issue #this is another step that comments on the issue 
+            Thanks for opening this issue! We'll take a look as soon as possible.
+
+  comment_on_closed_issue: # This job comments when an issue is closed
+    runs-on: ubuntu-latest # This job will run on the latest version of Ubuntu.
+    permissions: # This job requires write access to issues in order to add labels and comment.
+      issues: write
+    steps: # The "steps" section contains the individual tasks that will be performed in this job.
+      - name: Comment on a closed issue # This is another step that comments on the issue 
         uses: peter-evans/create-or-update-comment@v1 # This step uses the "peter-evans/create-or-update-comment" action to create or update a comment on the issue.
         with:
           issue-number: ${{ github.event.issue.number }} # The issue number is obtained from the context of the event that triggered the action.
-          body: | # The body of the comment is a message thanking the user for opening the issue.
-           The issue is now resolved!
-# Comment on when an users opens the first pull request 
+          body: | # The body of the comment is a message informing the user that the issue is resolved.
+            The issue is now resolved!
+
+  greet_on_first_pull_request: # This job greets when a user opens their first pull request
+    runs-on: ubuntu-latest # This job will run on the latest version of Ubuntu.
+    permissions: # This job requires write access to issues in order to add labels and comment.
+      contents: write
+      pull-requests: write
+    steps: # The "steps" section contains the individual tasks that will be performed in this job.
       - name: Greet User
         uses: actions/first-interaction@v1
         with:
